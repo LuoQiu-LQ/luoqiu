@@ -5,18 +5,11 @@ import { formatDate } from '@/lib/utils'
 export default async function DashboardPage() {
   const supabase = await createClient()
 
-  // 获取统计数据
-  const { data: stats } = await Promise.all([
-    supabase.from('posts').select('id', { count: 'exact' }),
-    supabase.from('posts').select('id').eq('status', 'published'),
-    supabase.from('comments').select('id', { count: 'exact' }),
-    supabase.from('messages').select('id', { count: 'exact' }),
-  ])
-
-  const postCount = stats[0]?.count || 0
-  const publishedCount = stats[1]?.count || 0
-  const commentCount = stats[2]?.count || 0
-  const messageCount = stats[3]?.count || 0
+  // 获取统计数据 - 单独查询避免类型问题
+  const { count: postCount } = await supabase.from('posts').select('id', { count: 'exact', head: true })
+  const { count: publishedCount } = await supabase.from('posts').select('id', { count: 'exact', head: true }).eq('status', 'published')
+  const { count: commentCount } = await supabase.from('comments').select('id', { count: 'exact', head: true })
+  const { count: messageCount } = await supabase.from('messages').select('id', { count: 'exact', head: true })
 
   // 获取最近文章
   const { data: recentPosts } = await supabase
