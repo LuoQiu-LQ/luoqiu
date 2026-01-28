@@ -15,6 +15,13 @@ const sizeClasses = {
   xl: 'w-16 h-16 text-lg',
 }
 
+const sizeMap = {
+  sm: '32px',
+  md: '40px',
+  lg: '48px',
+  xl: '64px',
+}
+
 export function Avatar({ src, name = 'User', size = 'md', className }: AvatarProps) {
   return (
     <div
@@ -27,13 +34,14 @@ export function Avatar({ src, name = 'User', size = 'md', className }: AvatarPro
       {src ? (
         <Image
           src={src}
-          alt={name}
-          fill
+          alt={name || 'Avatar'}
+          width={size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64}
+          height={size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64}
           className="object-cover"
-          sizes={size === 'sm' ? '32px' : size === 'md' ? '40px' : size === 'lg' ? '48px' : '64px'}
+          unoptimized
         />
       ) : (
-        getInitials(name)
+        <span className="select-none">{getInitials(name)}</span>
       )}
     </div>
   )
